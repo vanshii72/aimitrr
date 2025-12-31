@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Mitr – Result</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: #fff;
+            width: 90%;
+            max-width: 420px;
+            margin: 120px auto;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .popup button {
+            padding: 10px 18px;
+            margin: 8px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .yes-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .no-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        textarea {
+            width: 100%;
+            height: 70px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="result-container">
+
+    <h1>Result</h1>
+
+    <div class="result-box">
+        <img src="/{{ image_path }}" alt="Processed Image">
+    </div>
+
+    <div class="download-section">
+        <a href="/{{ image_path }}" download class="download-btn">
+            Download Image
+        </a>
+    </div>
+
+    {% if feature == "remove_bg" %}
+        <p class="info">Background removed successfully!</p>
+
+    {% elif feature == "rotate" %}
+        <p class="info">Image rotated successfully!</p>
+
+    {% elif feature == "resize" %}
+        <p class="info">Image resized successfully!</p>
+
+    {% elif feature == "color_font" %}
+        <h2>Color Palette</h2>
+        <div class="palette-box">
+            {% for color in palette %}
+                <div class="color-block"
+                     style="background: rgb({{ color[0] }}, {{ color[1] }}, {{ color[2] }});">
+                </div>
+            {% endfor %}
+        </div>
+
+        <h2>Font Suggestion</h2>
+        <p>{{ font_output }}</p>
+
+        <h2>Recommended Colors</h2>
+        <ul>
+            {% for suggestion in color_suggestions %}
+                <li>{{ suggestion }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="/" class="back-btn">Go Back</a>
+</div>
+
+<!-- ASK YES / NO -->
+<div id="askTextPopup" class="popup">
+    <div class="popup-content">
+        <h3>No text found in this image</h3>
+        <p>Do you want to add text?</p>
+
+        <button class="yes-btn" onclick="showTextForm()">Yes</button>
+        <button class="no-btn" onclick="closePopup()">No</button>
+    </div>
+</div>
+
+<!-- ADD TEXT FORM -->
+<div id="textFormPopup" class="popup">
+    <div class="popup-content">
+        <h3>Add a message</h3>
+
+        <form action="/add-text" method="POST">
+            <input type="hidden" name="image_path" value="{{ image_path }}">
+
+            <textarea name="user_text" required
+                      placeholder="Write your caption"></textarea>
+
+            <br><br>
+
+            <label>
+                Text Size:
+                <input type="range"
+                       name="font_size"
+                       min="15"
+                       max="80"
+                       value="30"
+                       oninput="this.nextElementSibling.value=this.value">
+                <output>30</output> px
+            </label>
+
+            <br><br>
+            <button type="submit" class="yes-btn">Add Text</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    let noText = "{{ no_text }}";
+
+    if (noText === "True") {
+        document.getElementById("askTextPopup").style.display = "block";
+    }
+
+    function showTextForm() {
+        document.getElementById("askTextPopup").style.display = "none";
+        document.getElementById("textFormPopup").style.display = "block";
+    }
+
+    function closePopup() {
+        document.getElementById("askTextPopup").style.display = "none";
+    }
+</script>
+
+</body>
+</html>

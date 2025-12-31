@@ -1,0 +1,7 @@
+*.class
+.vscode/
+.idea/
+node_modules/
+.env
+__pycache__/
+.ipynb_checkpoints/

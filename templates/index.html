@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Mitr – Creative AI Toolkit</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+
+<body>
+    <!-- ==================== HEADER / NAVBAR ==================== -->
+<header class="navbar">
+    <div class="nav-left">
+        <div class="logo-box">
+            <span class="logo-icon">AI</span>
+            <span class="logo-text">AI Mitr</span>
+        </div>
+    </div>
+
+    <nav class="nav-links">
+        <a href="#about">Features</a>
+        <a href="#workspace">How it works</a>
+        <!-- <a href="#pricing">Pricing</a> -->
+        <a href="#workspace" class="nav-btn">Get Started</a>
+    </nav>
+</header>
+
+
+<section class="home">
+    <div class="home-content">
+        <h1>AI Mitr</h1>
+        <p class="tagline">Creative Banao, Hassle-free</p>
+
+        <p class="objective">
+            AI Mitr helps users edit images, remove backgrounds,
+            get font & color suggestions, and is a one place for all your edits and helps you modify your images, and helps when you are in small (dwidha) by giving you perfect suggestions...
+        </p>
+
+        <a href="#workspace" class="start-btn">Get Started</a>
+    </div>
+
+    <div class="preview-card">
+        <div class="upload-box">Upload packshot</div>
+        <div class="suggestions">
+            <div class="suggestion font-sug">Font + Text suggestion</div>
+            <div class="suggestion color-sug">Color palette suggestion</div>
+        </div>
+    </div>
+</section>
+
+<section class="workspace" id="workspace">
+    <h2>Workspace</h2>
+    <p>Upload your image and select an action</p>
+
+    <div class="tool-box">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="image" required>
+
+            <select name="feature" required>
+                <option value="color_font">Color & Font</option>
+                <option value="remove_bg">Remove Background</option>
+                <option value="resize">Resize</option>
+                <option value="rotate">Rotate</option>
+            </select>
+
+            <div id="resize-options" class="hidden">
+                <input type="number" name="width" placeholder="Width (px)">
+                <input type="number" name="height" placeholder="Height (px)">
+            </div>
+
+            <div id="rotate-options" class="hidden">
+                <select name="angle">
+                    <option value="90">90°</option>
+                    <option value="180">180°</option>
+                    <option value="360">360°</option>
+                </select>
+            </div>
+
+            <button type="submit">Process</button>
+        </form>
+    </div>
+</section>
+<h3>📌 Applications</h3>
+<ul class="applications">
+    <li>Social media posts for small businesses</li>
+    <li>Retail advertisements & promotional banners</li>
+    <li>E-commerce product & catalog images</li>
+    <li>Student posters, presentations & college projects</li>
+    <li>Marketing creatives for startups and brands</li>
+</ul>
+<!-- ==================== DRAW ANYTHING SECTION ==================== -->
+<section class="draw-section" id="draw">
+    <h2>Draw Anything – Hassle Free 🎨</h2>
+    <p>Create quick sketches, ideas, or notes and download instantly.</p>
+
+    <div class="draw-tools">
+        <label>
+            Color:
+            <input type="color" id="drawColor" value="#000000">
+        </label>
+
+        <label>
+            Brush Size:
+            <input type="range" id="drawSize" min="2" max="20" value="5">
+            <span id="sizeValue">5</span> px
+        </label>
+
+        <button onclick="clearDraw()">Clear</button>
+        <button onclick="downloadDraw()">Download</button>
+    </div>
+
+    <canvas id="drawBoard" width="700" height="350"></canvas>
+</section>
+
+
+
+<footer>
+    <p>Created by <b>Vanshika Keswani</b></p>
+    <p>Email: <a href="mailto:vanshikakeshwani7722@gmail.com">vanshikakeshwani7722@gmail.com</a></p>
+    <P>CONTACT NO -8889143776</P>
+</footer>
+
+<script>
+const feature = document.querySelector("select[name='feature']");
+const resizeBox = document.getElementById("resize-options");
+const rotateBox = document.getElementById("rotate-options");
+
+feature.addEventListener("change", () => {
+    resizeBox.classList.toggle("hidden", feature.value !== "resize");
+    rotateBox.classList.toggle("hidden", feature.value !== "rotate");
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const canvas = document.getElementById("drawBoard");
+    const ctx = canvas.getContext("2d");
+
+    let isDrawing = false;
+    let color = document.getElementById("drawColor").value;
+    let size = document.getElementById("drawSize").value;
+
+    document.getElementById("drawColor").addEventListener("change", e => {
+        color = e.target.value;
+    });
+
+    document.getElementById("drawSize").addEventListener("input", e => {
+        size = e.target.value;
+        document.getElementById("sizeValue").innerText = size;
+    });
+
+    canvas.addEventListener("mousedown", () => isDrawing = true);
+    canvas.addEventListener("mouseup", () => {
+        isDrawing = false;
+        ctx.beginPath();
+    });
+    canvas.addEventListener("mouseleave", () => {
+        isDrawing = false;
+        ctx.beginPath();
+    });
+
+    canvas.addEventListener("mousemove", draw);
+
+    function draw(e) {
+        if (!isDrawing) return;
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(e.offsetX, e.offsetY, size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    window.clearDraw = function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    };
+
+    window.downloadDraw = function () {
+        const link = document.createElement("a");
+        link.download = "ai_mitr_drawing.png";
+        link.href = canvas.toDataURL();
+        link.click();
+    };
+
+});
+</script>
+
+
+</body>
+</html>
